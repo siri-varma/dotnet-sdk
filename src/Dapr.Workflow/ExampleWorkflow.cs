@@ -21,7 +21,6 @@ namespace Dapr.Workflow
     /// </summary>
     /// <remarks>
     /// Users should not implement workflows using this interface, directly.
-    /// Instead, <see cref="Workflow{TInput, TOutput}"/> should be used to implement workflows.
     /// </remarks>
     public interface IWorkflow
     {
