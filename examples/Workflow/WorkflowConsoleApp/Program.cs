@@ -9,14 +9,13 @@ var builder = Host.CreateDefaultBuilder(args).ConfigureServices(services =>
 {
     services.AddDaprWorkflow(options =>
     {
-        options.RegisterWorkflow<OrderProcessingWorkflow>();
+        options.RegisterWorkflow<VMProcessingWorkflow>();
 
-        options.RegisterActivity<DebitCashActivity>();
-        options.RegisterActivity<CreditCashActivity>();
+        options.RegisterActivity<VMMetadataFetchActivity>();
     });
 });
 
-Environment.SetEnvironmentVariable("DAPR_GRPC_PORT", "4002");
+Environment.SetEnvironmentVariable("DAPR_GRPC_PORT", "4001");
 
 using var host = builder.Build();
 host.Start();
@@ -26,13 +25,13 @@ Thread.Sleep(TimeSpan.FromSeconds(1));
 
 var daprWorkflowClient = host.Services.GetRequiredService<DaprWorkflowClient>();
 
-// await daprWorkflowClient.ScheduleNewWorkflowAsync(name: nameof(OrderProcessingWorkflow), input: "string", instanceId: "workflow-1");
+// await daprWorkflowClient.ScheduleNewWorkflowAsync(name: nameof(VMProcessingWorkflow), input: "string", instanceId: "workflow-4");
 
-WorkflowState state = await daprWorkflowClient.WaitForWorkflowStartAsync(instanceId: "workflow-1");
+WorkflowState state = await daprWorkflowClient.WaitForWorkflowStartAsync(instanceId: "workflow-4");
 
 while (true)
 {
-    state = await daprWorkflowClient.WaitForWorkflowCompletionAsync(instanceId: "workflow-1", default);
+    state = await daprWorkflowClient.WaitForWorkflowCompletionAsync(instanceId: "workflow-4", default);
 
     if (state.IsWorkflowCompleted)
     {

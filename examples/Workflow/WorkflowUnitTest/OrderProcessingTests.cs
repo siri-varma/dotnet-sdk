@@ -27,7 +27,7 @@ namespace WorkflowUnitTest
                 .Returns(Task.FromResult(inventoryResult));
 
             // Run the workflow directly
-            OrderResult result = await new OrderProcessingWorkflow().RunAsync(mockContext.Object, order);
+            OrderResult result = await new VMProcessingWorkflow().RunAsync(mockContext.Object, order);
             
             // Verify that workflow result matches what we expect
             Assert.NotNull(result);
@@ -40,7 +40,7 @@ namespace WorkflowUnitTest
 
             // Verify that ProcessPaymentActivity was called with a specific input
             mockContext.Verify(
-                ctx => ctx.CallActivityAsync(nameof(DebitCashActivity), expectedPaymentRequest, It.IsAny<WorkflowTaskOptions>()),
+                ctx => ctx.CallActivityAsync(nameof(VMMetadataFetchActivity), expectedPaymentRequest, It.IsAny<WorkflowTaskOptions>()),
                 Times.Once());
 
             // Verify that there were two calls to NotifyActivity
@@ -64,7 +64,7 @@ namespace WorkflowUnitTest
                 .Returns(Task.FromResult(inventoryResult));
 
             // Run the workflow directly
-            OrderResult result = await new OrderProcessingWorkflow().RunAsync(mockContext.Object, order);
+            OrderResult result = await new VMProcessingWorkflow().RunAsync(mockContext.Object, order);
 
             // Verify that ReserveInventoryActivity was called with a specific input
             mockContext.Verify(
@@ -73,7 +73,7 @@ namespace WorkflowUnitTest
 
             // Verify that ProcessPaymentActivity was never called
             mockContext.Verify(
-                ctx => ctx.CallActivityAsync(nameof(DebitCashActivity), It.IsAny<PaymentRequest>(), It.IsAny<WorkflowTaskOptions>()),
+                ctx => ctx.CallActivityAsync(nameof(VMMetadataFetchActivity), It.IsAny<PaymentRequest>(), It.IsAny<WorkflowTaskOptions>()),
                 Times.Never());
 
             // Verify that there were two calls to NotifyActivity
