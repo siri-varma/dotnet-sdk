@@ -40,7 +40,7 @@ namespace WorkflowUnitTest
 
             // Verify that ProcessPaymentActivity was called with a specific input
             mockContext.Verify(
-                ctx => ctx.CallActivityAsync(nameof(VMMetadataFetchActivity), expectedPaymentRequest, It.IsAny<WorkflowTaskOptions>()),
+                ctx => ctx.CallActivityAsync(nameof(FetchDataFromFileActivity), expectedPaymentRequest, It.IsAny<WorkflowTaskOptions>()),
                 Times.Once());
 
             // Verify that there were two calls to NotifyActivity
@@ -73,7 +73,7 @@ namespace WorkflowUnitTest
 
             // Verify that ProcessPaymentActivity was never called
             mockContext.Verify(
-                ctx => ctx.CallActivityAsync(nameof(VMMetadataFetchActivity), It.IsAny<PaymentRequest>(), It.IsAny<WorkflowTaskOptions>()),
+                ctx => ctx.CallActivityAsync(nameof(FetchDataFromFileActivity), It.IsAny<PaymentRequest>(), It.IsAny<WorkflowTaskOptions>()),
                 Times.Never());
 
             // Verify that there were two calls to NotifyActivity

@@ -6,13 +6,15 @@ namespace WorkflowConsoleApp.Workflows
 {
     public class VMProcessingWorkflow : Workflow<string, bool>
     {
-        public override async Task<bool> RunAsync(WorkflowContext context, string filename)
+        public override async Task<bool> RunAsync(WorkflowContext context, string filePath)
         {
-            string[] vms = { "vm-111", "vm-222", "vm-333" };
+            List<string> vmIds = await context.CallActivityAsync<List<string>>(nameof(FetchDataFromFileActivity), filePath);
 
-            await context.CallActivityAsync(nameof(VMMetadataFetchActivity), vms[0]);
-
-            await context.CallActivityAsync(nameof(VMMetadataFetchActivity), vms[1]);
+            List<string> serviceDetails = new List<string>();
+            foreach (string vmId in vmIds)
+            {
+                serviceDetails.Add(await context.CallActivityAsync<string>(nameof(VMMetadataFetchActivity), vmId));
+            }
 
             return true;
         }

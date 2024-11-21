@@ -11,6 +11,7 @@ var builder = Host.CreateDefaultBuilder(args).ConfigureServices(services =>
     {
         options.RegisterWorkflow<VMProcessingWorkflow>();
 
+        options.RegisterActivity<FetchDataFromFileActivity>();
         options.RegisterActivity<VMMetadataFetchActivity>();
     });
 });
@@ -22,16 +23,20 @@ host.Start();
 DaprClient daprClient = new DaprClientBuilder().Build();
 Thread.Sleep(TimeSpan.FromSeconds(1));
 
-
+// Get the client
 var daprWorkflowClient = host.Services.GetRequiredService<DaprWorkflowClient>();
 
-// await daprWorkflowClient.ScheduleNewWorkflowAsync(name: nameof(VMProcessingWorkflow), input: "string", instanceId: "workflow-4");
+string workflowName = "workflow-23467";
 
-WorkflowState state = await daprWorkflowClient.WaitForWorkflowStartAsync(instanceId: "workflow-4");
+// Schedule the workflow
+// await daprWorkflowClient.ScheduleNewWorkflowAsync(name: nameof(VMProcessingWorkflow), input: "C:\\Users\\svegiraju\\OneDrive - Microsoft\\Desktop\\vms.txt", instanceId: workflowName);
 
+WorkflowState state = await daprWorkflowClient.WaitForWorkflowStartAsync(instanceId: workflowName);
+
+// Wait until the workflow completes
 while (true)
 {
-    state = await daprWorkflowClient.WaitForWorkflowCompletionAsync(instanceId: "workflow-4", default);
+    state = await daprWorkflowClient.WaitForWorkflowCompletionAsync(instanceId: workflowName, default);
 
     if (state.IsWorkflowCompleted)
     {

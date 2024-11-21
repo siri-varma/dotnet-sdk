@@ -5,14 +5,14 @@ using WorkflowConsoleApp.Models;
 
 namespace WorkflowConsoleApp.Activities
 {
-    public class VMMetadataFetchActivity : WorkflowActivity<string, bool>
+    public class VMMetadataFetchActivity : WorkflowActivity<string, string>
     {
-        public override Task<bool> RunAsync(WorkflowActivityContext context, string input)
+        public override Task<string> RunAsync(WorkflowActivityContext context, string input)
         {
             Console.WriteLine("****************** Fetch VM Metadata ******************");
             Console.WriteLine("VM Metadata for: " + input);
 
-            return Task.FromResult(true);
+            return Task.FromResult("service:" + input);
         }
     }
 }
